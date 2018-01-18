@@ -18,6 +18,8 @@ unsigned int replace(unsigned int x, int i, unsigned char b)
         break;
     }
     return (x2 | (b<<(8*i))); 
+    /*Use a switch so i will correllate to whichever case and then b will servce as the replacement in the correct position. Then get the correct replacedment by returning this x2 in the switch or left shift b by 2 bits */
+
 }
 int main(int argc, char *argv[]){
     printf("%X\n",replace(0x12345678, 0, 0xAB));

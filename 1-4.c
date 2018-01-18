@@ -15,4 +15,4 @@ int main(int argc, char *argv[]){
     return 0;
 }
     
-// here are some comments
+/* I  created an unsigned int mask which is set to the hexadecimal where 1 is at every even intex. I then created an unsigned int x2 set equal to mask and x. Since the return statement is 0 or 1, I returned x2 not equal to 0. */
