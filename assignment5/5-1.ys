@@ -1,0 +1,50 @@
+.pos 0
+Init:
+    irmovl Stack, %ebp
+    irmovl Stack, %esp
+    call Main
+    ret
+    
+.pos 0x104
+    .align 4
+xp:
+    .long 0x8
+yp:
+    .long 0xa
+    
+swap:
+    pushl %ebp  
+    rrmovl %esp, %ebp
+    pushl %ebx
+    
+    mrmovl 8(%ebp), %edx
+    mrmovl 12(%ebp), %ecx
+    mrmovl (%edx), %ebx
+    mrmovl (%ecx), %eax
+    rmmovl %eax, (%edx)
+    rmmovl %ebx, (%ecx)
+    
+    
+    popl %ebx
+    popl %ebp
+    ret
+    
+    
+
+Main:
+    pushl %ebp
+    rrmovl %esp, %ebp
+    pushl %ebx
+    irmovl xp, %ebx
+    pushl %ebx
+    irmovl yp, %ebx
+    pushl %ebx
+    call swap
+    popl %ebx
+    popl %ebp
+    ret
+
+    
+.pos 0x100
+Stack:
+
