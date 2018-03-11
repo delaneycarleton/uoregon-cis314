@@ -1,10 +1,11 @@
 .pos 0
 Init:
-    irmovl Stack, %ebp
-    irmovl Stack, %esp
-    call Main
-    ret
-    
+    irmovl Stack, %ebp #set up base pointer
+    irmovl Stack, %esp #set up stack pointer
+    call Main          #executes the main program
+    halt               #terminates program
+   
+#array of 4 elements 
 .pos 0x104
     .align 4
 xp:
@@ -13,38 +14,38 @@ yp:
     .long 0xa
     
 swap:
-    pushl %ebp  
-    rrmovl %esp, %ebp
-    pushl %ebx
+    pushl %ebp              #push ebp 
+    rrmovl %esp, %ebp       #register -> register copies esp into ebp
+    pushl %ebx              #push ebx
     
-    mrmovl 8(%ebp), %edx
-    mrmovl 12(%ebp), %ecx
-    mrmovl (%edx), %ebx
-    mrmovl (%ecx), %eax
-    rmmovl %eax, (%edx)
-    rmmovl %ebx, (%ecx)
+    mrmovl 8(%ebp), %edx    #memory -> register copies value at address ebp into edx, x value
+    mrmovl 12(%ebp), %ecx   #memory -> register copies value at address ebp into ecx, y value
+    mrmovl (%edx), %ebx     #memory -> register copies value at address edx into ebx
+    mrmovl (%ecx), %eax     #memory -> register copies value at address ecx into eax
+    rmmovl %eax, (%edx)     #register -> memory copies eax into value at address edx
+    rmmovl %ebx, (%ecx)     #register -> memory copies ebx into value at address ecx
     
     
-    popl %ebx
-    popl %ebp
-    ret
+    popl %ebx       #read memory at %ebx
+    popl %ebp       #read memory at %ebp
+    ret             #return
     
     
 
 Main:
-    pushl %ebp
-    rrmovl %esp, %ebp
-    pushl %ebx
-    irmovl xp, %ebx
-    pushl %ebx
-    irmovl yp, %ebx
-    pushl %ebx
-    call swap
-    popl %ebx
-    popl %ebp
-    ret
+    pushl %ebp          #push ebp
+    rrmovl %esp, %ebp   #register -> register copies esp to ebp
+    pushl %ebx          # push ebx
+    irmovl xp, %ebx     # iterator -> register copies xp into ebx
+    pushl %ebx          #push ebx
+    irmovl yp, %ebx     #iterator ->register copies yp into ebx
+    pushl %ebx          #push ebx
+    call swap           
+    popl %ebx           #read memory at %ebx
+    popl %ebp           #read memory at %ebp
+    ret                 #return
 
-    
+#stack starts here and grows to lower address 
 .pos 0x100
 Stack:
 

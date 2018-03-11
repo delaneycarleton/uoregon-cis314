@@ -1,0 +1,140 @@
+.pos 0
+Init:
+    irmovl Stack, %ebp
+    irmovl Stack, %esp
+    call Main
+    halt
+    
+.pos 0x104  
+    .align 4
+array:
+    .long 0x000a
+    .long 0x0009
+    .long 0x0008
+    .long 0x0007
+    .long 0x0006
+    .long 0x0005
+    .long 0x0004
+    .long 0x0003
+    .long 0x0002
+    .long 0x0001
+    
+swap:
+    pushl %ebp              #push ebp
+    rrmovl %esp, %ebp       #register -> register copies esp into ebp
+    pushl %ebx              #push ebx
+
+    mrmovl 8(%ebp), %edx    #memory -> register copies value at address ebp into edx, x value
+    mrmovl 12(%ebp), %ecx   #memory -> register copies value at address ebp into ecx, y value
+    mrmovl (%edx), %ebx     #memory -> register copies value at address edx into ebx
+    mrmovl (%ecx), %eax     #memory -> register copies value at address ecx into eax
+    rmmovl %eax, (%edx)     #register -> memory copies eax into value at address edx
+    rmmovl %ebx, (%ecx)     #register -> memory copies ebx into value at address ecx
+
+
+    popl %ebx       #read memory at %ebx
+    popl %ebp       #read memory at %ebp
+    ret             #return
+
+
+sort:
+    pushl %ebp
+    rrmovl %esp, %ebp
+    mrmovl 8(%ebp), %ecx #array
+    mrmovl 12(%ebp), %eax #n
+    irmovl $4, %edx  #1
+    pushl %ebx
+    irmovl $0, %ebx  #i
+    pushl %edi
+    pushl %esi
+    
+    
+    
+Loop1:
+    irmovl $0, %edi #j
+    rrmovl %eax, %esi #esi = n
+    subl %ebx, %esi #esi = n - i
+    subl %edx, %esi ##esi = n - i - 1
+    
+Loop2:
+    pushl %ecx
+    pushl %eax
+
+    addl %edi, %ecx  #ecx += j
+    mrmovl (%ecx), %eax  #eax = *(ecx)
+    
+    addl %edx, %ecx  #ecx += 1
+    mrmovl (%ecx), %ecx  #ecx = *(ecx)
+    
+    subl %eax, %ecx
+    popl %eax
+    popl %ecx
+    
+    jge Loop2End
+    
+    pushl %edx
+    pushl %eax
+    
+    pushl %ecx
+    
+    addl %edi, %ecx #ecx +=j
+    pushl %ecx
+    
+    addl %edx, %ecx #ecx += 1
+    pushl %ecx
+    
+    call swap
+    
+    popl %ecx
+    popl %ecx
+    popl %ecx
+    popl %eax
+    popl %edx
+    
+Loop2End:  
+    addl %edx, %edi #j++
+    
+    pushl %esi
+    subl %edi, %esi
+    popl %esi
+    
+    jg Loop2
+
+Loop1End:
+    addl %edx, %ebx  #i++ 
+    
+    pushl %eax
+    subl %ebx, %eax
+    popl %eax
+    
+    jg Loop1
+    
+    popl %esi
+    popl %edi
+    popl %ebx
+    popl %ebp
+    
+    ret
+    
+
+Main:
+    pushl %ebp
+    rrmovl %esp, %ebp
+    irmovl $40, %eax   #n
+    irmovl array, %ecx #array
+    
+    pushl %eax
+    pushl %ecx
+    
+    call sort
+    
+    popl %eax
+    popl %ecx
+    popl %ebp
+    
+    ret
+    
+.pos 0x100
+Stack:
+
+
